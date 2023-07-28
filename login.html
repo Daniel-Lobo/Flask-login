@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    .column{
+        display:flex;
+        flex-direction:column;
+        margin:auto;
+        width:50%;      
+        height:50%; 
+        gap: 5px;
+    }
+    .row{
+        flex-grow: 0;
+        display:flex;
+        flex-direction:row;
+        gap: 5px;
+    }
+    .item{
+        flex-grow: 0;
+        font-size:30px;
+        width:45px;        
+        height:45px;        
+        text-align:center;
+    }
+    .item:hover{
+        cursor:pointer;    
+        transform: scale(2.0) 
+    }
+    .spacer {
+        flex-grow: 1;
+    }
+    .login_input
+    {
+        border: none;   
+        outline: none; 
+        border: none;   
+        outline: none;  
+        border-radius: 4px;
+        height:30px;        
+        padding-left: 5px;
+        background-color: lightgray;         
+    } 
+    .backspace{        
+        border: none;   
+        outline: none;  
+        border-radius: 4px;
+        background-color: #0072b5;
+        color:white;
+        height:30px;
+        cursor: pointer;
+        font-size:20px;
+    }
+    .backspace:hover{
+        border: solid 2px darkgray;  
+        border-radius: 4px;
+    }
+    .Radio{
+        margin-top:-15px;
+    }
+    .GenderDiv{
+        background-color: lightgray;
+        width:780px; 
+        height:30px; 
+        border-radius: 4px;
+        padding-top:5px;
+        padding-left:5px;
+    }
+</style>
+<head>
+    <title>Visual login</title>
+</head>    
+<body>    
+    <div class="column">        
+        {% for row in rows %}
+            <div class="row">
+                {% for item in items %}
+                    <div class="item" onclick="emojiclicked(this)">&#x{{row}}{{item}};</div>
+                {% endfor %} 
+            </div>
+        {% endfor %}   
+        <!--
+        <div class="row GenderDiv">
+            Gender:
+            <input type="radio" name="gender" id="male" class="Radio" value="Male">Male
+            <input type="radio" name="gender" id="female" class="Radio" value="Female" checked>Female
+        </div>
+        <div class="row">
+            <input placeholder='First name' class="login_input" id="1st_name" style="width:385px"></input> 
+            <input placeholder='Last name' class="login_input" id="last_name" style="width:385px"></input>              
+        </div>   
+        --> 
+        <input placeholder='email adrress' class="login_input" id="email" style="width:775px"></input> 
+        <div class="row">
+            <div placeholder='user name' id="password" class="login_input" style="width:700px"></div>  
+            <button class="backspace" id="backspace" style="width:75px">&#x2190</button>     
+        </div>        
+        <button class='backspace' style="width:780px" id="login_button">Log in</button>  
+        <button class='backspace' style="width:780px" id="register_button">Register</button>           
+        <div id='login_err' class='login_err'>...</div>  
+    </div> 
+    <script src="static/login.js"></script>    
+</body>
+</html>

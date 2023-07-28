@@ -12,6 +12,13 @@ async function register(msg)
     document.getElementById('login_err').innerHTML = data.err;
 } 
 
+async function reset(msg)
+{
+    let response = await fetch(`/reset?${msg}`);
+    let data     = await response.json();
+    document.getElementById('login_err').innerHTML = data.err;
+} 
+
 function get_user_input()
 {
     data = {        
@@ -55,6 +62,17 @@ document.getElementById('register_button').onclick = function()
         return;
     }
     register(user.msg);
+}
+
+document.getElementById('reset_button').onclick = function()
+{
+    var user = get_user_input();
+    if ('' == data.email)
+    {
+        document.getElementById('login_err').innerHTML = 'Please enter your email';
+        return;
+    }  
+    reset(user.msg);
 }
 
 function emojiclicked(element)

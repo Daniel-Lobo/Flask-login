@@ -11,16 +11,21 @@ from threading import Thread
 
 app = Flask(__name__)
 
-def SendSecret(receiver_email, secret, root):
+def SendSecret(receiver_email, secret, root, reset=False):
     print('started')
-    sender_email   = 'dabo.loniel@gmail.com'    
-    password       = 'qbffrrmwvdthnuuu'
+    #sender_email   = 'dabo.loniel@gmail.com'    
+    #password       = 'qbffrrmwvdthnuuu'
+
+    sender_email   = 'ayangbemifunsho@gmail.com'
+    password       = 'chidvstnmbtqynds'
 
     msg = MIMEMultipart()
     msg['From']    = sender_email
     msg['To']      = receiver_email
     msg['Subject'] = 'Access token'
     message        = f'Access the app using the link:\n{root}access?&user={receiver_email}\nWith the code:\n{secret}'
+    if reset is True:
+        message    = f'To reset your password access:\n{root}Resetpassword?&user={receiver_email}&code={secret}'
     msg.attach(MIMEText(message))
 
     mailserver = smtplib.SMTP(host='smtp.gmail.com', port=587)   
@@ -43,6 +48,14 @@ def GetArgs():
 async def main():
     return Template(template('login.html')).render(items=[hex(n).split('0x')[1] for n in range(16)], rows=[hex(0x1F60 + n).split('0x')[1] for n in [0, 1, 2, 3, 4, 8, 9, 10, 11]])
 
+@app.route("/Resetpassword")
+async def Resetpassword():
+    return Template(template('reset.html')).render(
+        items = [hex(n).split('0x')[1] for n in range(16)], 
+        rows  = [hex(0x1F60 + n).split('0x')[1] for n in [0, 1, 2, 3, 4, 8, 9, 10, 11]],
+        email = request.args.get('user')
+        )
+
 @app.route('/access')
 async def access():
     return Template(template('access.html')).render()
@@ -59,7 +72,41 @@ async def access_submit():
         else: 
             user = db.UpdateSecret(email) 
             Thread(target=SendSecret, args=(email, user['secret'], request.root_url,)).start() #type: ignore      
-            return dumps({'code' : 'OK', 'msg' : Template(template('loged.html')).render(user=email)})              
+            return dumps({'code' : 'OK', 'msg' : Template(template('loged.html')).render(user=email)})   
+
+@app.route('/Resetsubmit')
+async def Resetsubmit(): 
+    email, code, new_password = request.args.get('email'), request.args.get('code'), request.args.get('password')
+    db = Database()
+    if not db.IsUser(email): return dumps({'code' : f'{email} is not a registered user'})
+    else:
+        user = db.GetUser(email)
+        if user is None          : return dumps({'code' : 'database error'})
+        if user['secret'] != code: return dumps({'code' : f'wrong access code {user["secret"] }'}) 
+        else: 
+            user = db.UpdatepassWord(email, new_password)                
+            return dumps({'code' : 'OK'})   
+
+@app.route('/reset')                   
+async def reset():  
+    reply = {'err' : ''}
+    email, password = GetArgs()    
+    db = Database()
+    if not db.IsUser(email):
+        reply['err'] = f'{email} is not an user'        
+    else:
+        user = db.GetUser(email)
+        if user is None:
+            reply['err'] = f'{email} databse error'         
+        else:  
+            user = db.UpdateSecret(email) 
+            if user is None or isinstance(user, str):
+               reply['err'] = f'{email} database error'         
+            else:
+                user = db.UpdateSecret(email) 
+                Thread(target=SendSecret, args=(email, user['secret'], request.root_url, True,)).start() # type: ignore
+                reply['err'] = f'A link was sent to reset your password was sent to "{email}"' 
+    return dumps(reply, indent=4)
 
 @app.route("/login")
 async def login():  
@@ -80,7 +127,7 @@ async def login():
                reply['err'] = f'{email} databse error'         
             else:
                 Thread(target=SendSecret, args=(email, user['secret'], request.root_url,)).start()
-                reply['err'] = f'A acess link and access token link was sent to "{email}". Please access that link to finalize login' 
+                reply['err'] = f'A access link and access token link was sent to "{email}". Please access that link to finalize login' 
     return dumps(reply, indent=4)
 
 @app.route("/register")

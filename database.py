@@ -29,7 +29,7 @@ class Database():
         return user in users[0]
     
     def AddUser(self, email, password):
-        secret = token_hex(32)       
+        secret = token_hex(3)       
         data   = (email, secret, password) 
         self.__db.execute("INSERT INTO users (email, secret, password) VALUES(?, ?, ?);", data)
         self.__db.connection.commit() 
@@ -44,8 +44,14 @@ class Database():
 
     def UpdateSecret(self, user):
         if not self.IsUser(user): return 'Not an user'
-        secret = token_hex(32) 
+        secret = token_hex(3) 
         print(user)
         self.__db.execute(f'UPDATE users SET secret="{secret}" WHERE email="{user}"')
+        self.__db.connection.commit()         
+        return self.GetUser(user)
+    
+    def UpdatepassWord(self, user, password):
+        if not self.IsUser(user): return 'Not an user'         
+        self.__db.execute(f'UPDATE users SET password="{password}" WHERE email="{user}"')
         self.__db.connection.commit()         
         return self.GetUser(user)

@@ -36,9 +36,10 @@
         border: none;   
         outline: none;  
         border-radius: 4px;
-        height:30px;        
+        height:25px;        
         padding-left: 5px;
-        background-color: lightgray;         
+        background-color: lightgray; 
+        padding-top: 5px;        
     } 
     .backspace{        
         border: none;   
@@ -77,28 +78,15 @@
                     <div class="item" onclick="emojiclicked(this)">&#x{{row}}{{item}};</div>
                 {% endfor %} 
             </div>
-        {% endfor %}   
-        <!--
-        <div class="row GenderDiv">
-            Gender:
-            <input type="radio" name="gender" id="male" class="Radio" value="Male">Male
-            <input type="radio" name="gender" id="female" class="Radio" value="Female" checked>Female
-        </div>
-        <div class="row">
-            <input placeholder='First name' class="login_input" id="1st_name" style="width:385px"></input> 
-            <input placeholder='Last name' class="login_input" id="last_name" style="width:385px"></input>              
-        </div>   
-        --> 
-        <input placeholder='email adrress' class="login_input" id="email" style="width:775px"></input> 
+        {% endfor %}          
+        <div class="login_input" id="email" style="width:775px">{{email}}</div> 
         <div class="row">
             <div placeholder='user name' id="password" class="login_input" style="width:700px"></div>  
             <button class="backspace" id="backspace" style="width:70px">&#x2190</button>     
-        </div>        
-        <button class='backspace' style="width:780px" id="login_button">Log in</button>  
-        <button class='backspace' style="width:780px" id="register_button">Register</button>       
-        <button class='backspace' style="width:780px" id="reset_button">Reset password</button>               
+        </div>         
+        <button class='backspace' style="width:780px" id="Reset">Reset</button>           
         <div id='login_err' class='login_err'>...</div>  
     </div> 
-    <script src="static/login.js"></script>    
+    !--<script src="static/reset.js"></script>
 </body>
 </html>

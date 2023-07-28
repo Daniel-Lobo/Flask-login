@@ -35,7 +35,7 @@ class Database():
         self.__db.connection.commit() 
         return None
     
-    def GetUser(self, user)->dict|None:
+    def GetUser(self, user):
         users = self.__db.execute('SELECT * FROM users WHERE email=?', (user,)).fetchall()           
         if len(users) == 0: return None      
         user  = users[0]   
